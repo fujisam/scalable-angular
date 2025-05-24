@@ -57,3 +57,110 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+
+
+##################################################
+##################################################
+##################################################
+
+
+
+
+
+# Diagramas do Projeto Angular Escalável
+
+## 1. Estrutura de Pastas
+
+```text
+src/
+ └── app/
+      ├── core/          # Serviços principais, interceptadores, guards
+      │     ├── auth.guard.ts
+      │     ├── auth.interceptor.ts
+      │     └── api.service.ts
+      ├── shared/       # Componentes e serviços reutilizáveis
+      │     └── ...
+      ├── features/     # Módulos por funcionalidade
+      │     ├── auth/
+      │     │     ├── auth.module.ts
+      │     │     └── login/
+      │     │           └── login.component.ts
+      │     └── dashboard/
+      │           ├── dashboard.module.ts
+      │           └── home/
+      │                 └── home.component.ts
+      ├── app-routing.module.ts
+      └── app.module.ts
+```
+
+---
+
+## 2. Diagrama de Fluxo — Autenticação
+
+```text
+Usuário → LoginComponent → AuthService → API → Token (localStorage)
+                       ↓
+                    Router → Dashboard
+```
+
+**Explicação:**
+- Usuário preenche login.
+- `AuthService` faz chamada HTTP via `ApiService`.
+- Recebe token → armazena no `localStorage`.
+- Redireciona para `Dashboard`.
+
+---
+
+## 3. Diagrama de Comunicação — Interceptador HTTP
+
+```text
+HttpClient → AuthInterceptor → API
+                       ↓
+             (Adiciona Header Authorization)
+```
+
+**Explicação:**
+- Toda requisição passa pelo `AuthInterceptor`.
+- Token JWT é adicionado no cabeçalho `Authorization`.
+
+---
+
+## 4. Fluxo de Rotas
+
+```text
+'' → /dashboard
+     ↳ lazy load → DashboardModule
+
+'/auth' → lazy load → AuthModule
+           ↳ /auth/login → LoginComponent
+
+Proteção → AuthGuard → se não autenticado → /auth/login
+```
+
+**Explicação:**
+- Rotas organizadas com `lazy loading`.
+- `AuthGuard` protege rotas de usuários não autenticados.
+
+---
+
+## 5. Diagrama de Deploy
+
+```text
+Local Dev → Git → GitHub → GitHub Pages → Deploy Prod
+
+Testes: Karma/Jasmine + Cypress
+Lint: ESLint
+CI/CD: opcional via GitHub Actions
+```
+
+**Explicação:**
+- Desenvolvimento local.
+- Versionamento com Git.
+- Deploy automático para GitHub Pages.
+
+
+
+
